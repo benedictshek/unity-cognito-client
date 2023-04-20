@@ -23,6 +23,7 @@ public class UIInputManager : MonoBehaviour
    private GameObject _unauthInterface;
    private GameObject _authInterface;
    private LambdaManager _lambdaManager;
+   private S3BucketManager _s3BucketManager;
    private GameObject _loading;
    private GameObject _welcome;
    private GameObject _confirmEmail;
@@ -112,7 +113,9 @@ public class UIInputManager : MonoBehaviour
       Debug.Log("Changed to GameScene");
 
       // call to lambda to demonstrate use of credentials
-      _lambdaManager.ExecuteLambda();
+      //_lambdaManager.ExecuteLambda();
+      
+      _s3BucketManager.ExecuteS3();
    }
 
    private async void RefreshToken()
@@ -193,6 +196,7 @@ public class UIInputManager : MonoBehaviour
 
       _authenticationManager = FindObjectOfType<AuthenticationManager>();
       _lambdaManager = FindObjectOfType<LambdaManager>();
+      _s3BucketManager = FindObjectOfType<S3BucketManager>();
 
       _fields = new List<Selectable> { emailFieldLogin, passwordFieldLogin, loginButton, emailField, usernameField, passwordField, signupButton };
    }

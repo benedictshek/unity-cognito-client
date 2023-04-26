@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using Amazon.DynamoDBv2;
@@ -70,6 +71,11 @@ public class LocalServerManager : MonoBehaviour
     public void PressPutItem()
     {
         StartCoroutine(PutItem(_studentID, _score, _time, _tableName));
+    }
+
+    public void PressScanAllItem()
+    {
+        StartCoroutine(ScanTable(_tableName));
     }
 
     public async void PressGetItem()
@@ -327,6 +333,42 @@ public class LocalServerManager : MonoBehaviour
         else
         {
             Debug.LogError($"Failed to update item: {response.Exception}");
+        }
+    }
+    
+    private IEnumerator ScanTable(string tableName)
+    {
+        var request = new ScanRequest
+        {
+            TableName = tableName
+        };
+        
+        var response = _dynamoDBClient.ScanAsync(request);
+        yield return new WaitUntil(() => response.IsCompleted);
+        
+        if (response.Exception == null)
+        {
+            Debug.Log("Scan all item successfully!");
+            if (response.Result.Items.Any())
+            {
+                foreach (var item in response.Result.Items)
+                {
+                    // Access the attributes of each item in the response
+                    var studentID = item["StudentID"].S;
+                    var score = item["Score"].N;
+                    var time = item["Time"].N;
+                    Debug.Log($"StudentID: {studentID} Score: {score} Time: {time}");
+                }
+            }
+            else
+            {
+                // Handle the case where there are no items to process
+                Debug.Log("No items found in the DynamoDB table.");
+            }
+        }
+        else
+        {
+            Debug.LogError($"Error scanning table: {response.Exception}");
         }
     }
 }

@@ -15,6 +15,9 @@ public class LocalServerManager : MonoBehaviour
     private string _score;
     private string _time;
     private string _newTime;
+    private string _attributeName;
+    private string _comparisonOperator;
+    private string _attributeValue;
 
     private void Start()
     {
@@ -52,6 +55,21 @@ public class LocalServerManager : MonoBehaviour
     {
         _newTime = inputNewTime;
     }
+
+    public void InputAttributeName(string inputAttributeName)
+    {
+        _attributeName = inputAttributeName;
+    }
+    
+    public void InputComparisonOperator(string inputComparisonOperator)
+    {
+        _comparisonOperator = inputComparisonOperator;
+    }
+    
+    public void InputAttributeValue(string inputAttributeValue)
+    {
+        _attributeValue = inputAttributeValue;
+    }
     
     public void PressCreateTable()
     {
@@ -75,7 +93,12 @@ public class LocalServerManager : MonoBehaviour
 
     public void PressScanAllItem()
     {
-        StartCoroutine(ScanTable(_tableName));
+        StartCoroutine(ScanAllItemInTable(_tableName));
+    }
+    
+    public void PressScanItem()
+    {
+        StartCoroutine(ScanItemInTable(_tableName));
     }
 
     public async void PressGetItem()
@@ -336,11 +359,56 @@ public class LocalServerManager : MonoBehaviour
         }
     }
     
-    private IEnumerator ScanTable(string tableName)
+    private IEnumerator ScanAllItemInTable(string tableName)
     {
         var request = new ScanRequest
         {
             TableName = tableName
+        };
+        
+        var response = _dynamoDBClient.ScanAsync(request);
+        yield return new WaitUntil(() => response.IsCompleted);
+        
+        if (response.Exception == null)
+        {
+            Debug.Log("Scan all item successfully!");
+            if (response.Result.Items.Any())
+            {
+                foreach (var item in response.Result.Items)
+                {
+                    // Access the attributes of each item in the response
+                    var studentID = item["StudentID"].S;
+                    var score = item["Score"].N;
+                    var time = item["Time"].N;
+                    Debug.Log($"StudentID: {studentID} Score: {score} Time: {time}");
+                }
+            }
+            else
+            {
+                // Handle the case where there are no items to process
+                Debug.Log("No items found in the DynamoDB table.");
+            }
+        }
+        else
+        {
+            Debug.LogError($"Error scanning table: {response.Exception}");
+        }
+    }
+    
+    private IEnumerator ScanItemInTable(string tableName)
+    {
+        var request = new ScanRequest
+        {
+            TableName = tableName,
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                { "#attributeName", _attributeName },
+            },
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":val", new AttributeValue { N = _attributeValue } },
+            },
+            FilterExpression = "#attributeName" + _comparisonOperator + ":val"
         };
         
         var response = _dynamoDBClient.ScanAsync(request);

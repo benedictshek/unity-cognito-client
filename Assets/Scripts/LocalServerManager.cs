@@ -18,6 +18,7 @@ public class LocalServerManager : MonoBehaviour
     private string _attributeName;
     private string _comparisonOperator;
     private string _attributeValue;
+    private string _partitionKey;
 
     private void Start()
     {
@@ -70,6 +71,11 @@ public class LocalServerManager : MonoBehaviour
     {
         _attributeValue = inputAttributeValue;
     }
+
+    public void InputPartitionKey(string inputPartitionKey)
+    {
+        _partitionKey = inputPartitionKey;
+    }
     
     public void PressCreateTable()
     {
@@ -99,6 +105,11 @@ public class LocalServerManager : MonoBehaviour
     public void PressScanItem()
     {
         StartCoroutine(ScanItemInTable(_tableName));
+    }
+
+    public void PressQueryItem()
+    {
+        StartCoroutine(QueryItemInTable(_tableName));
     }
 
     public async void PressGetItem()
@@ -437,6 +448,58 @@ public class LocalServerManager : MonoBehaviour
         else
         {
             Debug.LogError($"Error scanning table: {response.Exception}");
+        }
+    }
+    
+    private IEnumerator QueryItemInTable(string tableName)
+    {
+        var request = new QueryRequest
+        {
+            TableName = tableName,
+            KeyConditionExpression = "StudentID = :key",
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":key", new AttributeValue { S = _partitionKey } },
+            },
+        };
+
+        //check if want to add filter to the query
+        if (!string.IsNullOrEmpty(_attributeName))
+        {
+            request.ExpressionAttributeValues.Add(":val", new AttributeValue { N = _attributeValue });
+            request.ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                {"#attributeName", _attributeName}
+            };
+            request.FilterExpression = "#attributeName" + _comparisonOperator + ":val";
+        }
+
+        var response = _dynamoDBClient.QueryAsync(request);
+        yield return new WaitUntil(() => response.IsCompleted);
+        
+        if (response.Exception == null)
+        {
+            Debug.Log("Query all item successfully!");
+            if (response.Result.Items.Any())
+            {
+                foreach (var item in response.Result.Items)
+                {
+                    // Access the attributes of each item in the response
+                    var studentID = item["StudentID"].S;
+                    var score = item["Score"].N;
+                    var time = item["Time"].N;
+                    Debug.Log($"StudentID: {studentID} Score: {score} Time: {time}");
+                }
+            }
+            else
+            {
+                // Handle the case where there are no items to process
+                Debug.Log("No items found in the DynamoDB table.");
+            }
+        }
+        else
+        {
+            Debug.LogError($"Error querying table: {response.Exception}");
         }
     }
 }

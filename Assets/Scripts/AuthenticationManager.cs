@@ -11,7 +11,7 @@ using System.Net;
 public class AuthenticationManager : MonoBehaviour
 {
    // the AWS region of where your services live
-   public static Amazon.RegionEndpoint Region = Amazon.RegionEndpoint.USEast1;
+   public static Amazon.RegionEndpoint Region = Amazon.RegionEndpoint.APSoutheast2;
 
    // In production, should probably keep these in a config file
    const string IdentityPool = "YOUR_IDENTITY_POOL_ID"; //insert your Cognito User Pool ID, found under General Settings
@@ -23,6 +23,11 @@ public class AuthenticationManager : MonoBehaviour
    private static string _userid = "";
    private CognitoUser _user;
 
+   private void Start()
+   {
+      DontDestroyOnLoad(this.gameObject);
+   }
+   
    public async Task<bool> RefreshSession()
    {
       Debug.Log("RefreshSession");

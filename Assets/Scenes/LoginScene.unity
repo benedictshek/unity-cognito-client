@@ -123,6 +123,49 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &163054723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 163054724}
+  - component: {fileID: 163054725}
+  m_Layer: 0
+  m_Name: '[AuthenticationManager]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &163054724
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163054723}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &163054725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163054723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9f6d4c3dfa55441698bceea47d93df5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &183226280
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,9 +691,7 @@ GameObject:
   - component: {fileID: 416362968}
   - component: {fileID: 416362967}
   - component: {fileID: 416362969}
-  - component: {fileID: 416362970}
   - component: {fileID: 416362971}
-  - component: {fileID: 416362972}
   m_Layer: 5
   m_Name: OptionsContainer
   m_TagString: Untagged
@@ -739,18 +780,6 @@ MonoBehaviour:
   usernameField: {fileID: 312065638}
   emailField: {fileID: 628489899}
   passwordField: {fileID: 183226282}
---- !u!114 &416362970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 416362965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9f6d4c3dfa55441698bceea47d93df5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &416362971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -764,18 +793,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenuButton: {fileID: 0}
---- !u!114 &416362972
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 416362965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53e7959abb54c8b4ead2e24cb5d94ba1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &505796324
 GameObject:
   m_ObjectHideFlags: 0

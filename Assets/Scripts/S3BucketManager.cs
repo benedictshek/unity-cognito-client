@@ -7,15 +7,37 @@ public class S3BucketManager : MonoBehaviour
 {
     private AuthenticationManager _authenticationManager;
     
-    private const string BucketName = "visualnovel";
-    private const string objectKey = "json/test.json";
-    
+    private string _bucketName;
+    private string _objectKey;
+
     void Awake()
     {
         _authenticationManager = FindObjectOfType<AuthenticationManager>();
     }
     
-    public async void ExecuteS3()
+    public void InputBucketName(string inputBucketName)
+    {
+        _bucketName = inputBucketName;
+    }
+    
+    public void InputObjectKey(string inputObjectKey)
+    {
+        _objectKey = inputObjectKey;
+    }
+    
+    public void PressGetS3()
+    {
+        if (_authenticationManager == null)
+        {
+            Debug.Log("Not support in local, please log in first!");
+        }
+        else
+        {
+            ExecuteS3();
+        }
+    }
+    
+    private async void ExecuteS3()
     {
         Debug.Log("ExecuteS3");
         
@@ -23,8 +45,8 @@ public class S3BucketManager : MonoBehaviour
         
         var request = new GetObjectRequest
         {
-            BucketName = BucketName,
-            Key = objectKey
+            BucketName = _bucketName,
+            Key = _objectKey
         };
         
         try

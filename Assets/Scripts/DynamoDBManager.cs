@@ -6,9 +6,10 @@ using UnityEngine;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 
-public class LocalServerManager : MonoBehaviour
+public class DynamoDBManager : MonoBehaviour
 {
     private AmazonDynamoDBClient _dynamoDBClient;
+    private AuthenticationManager _authenticationManager;
 
     private string _tableName;
     private string _studentID;
@@ -20,16 +21,26 @@ public class LocalServerManager : MonoBehaviour
     private string _attributeValue;
     private string _partitionKey;
 
+    void Awake()
+    {
+        _authenticationManager = FindObjectOfType<AuthenticationManager>();
+    }
+    
     private void Start()
     {
-        // Set up the AWS SDK configuration
-        var config = new AmazonDynamoDBConfig
+        if (_authenticationManager == null)
         {
-            ServiceURL = "http://localhost:8000", // URL of your DynamoDB Local instance
-        };
-
-        // Instantiate the AmazonDynamoDBClient with the specified configuration
-        _dynamoDBClient = new AmazonDynamoDBClient(config);
+            var config = new AmazonDynamoDBConfig
+            {
+                ServiceURL = "http://localhost:8000", // URL of your DynamoDB Local instance
+            };
+        
+            _dynamoDBClient = new AmazonDynamoDBClient(config);
+        }
+        else
+        {
+            _dynamoDBClient = new AmazonDynamoDBClient(_authenticationManager.GetCredentials(), AuthenticationManager.Region);
+        }
     }
 
     public void InputTableName(string inputName)
